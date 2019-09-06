@@ -2,7 +2,7 @@ var canvas=document.getElementById('snakeGame');        //linking canvas
 var ctx=canvas.getContext('2d');         //it provides methods to draw  on canvas
 var snakeCordinates=[{xaxis:200,yaxis:200},{xaxis:190,yaxis:200},{xaxis:180,yaxis:200},{xaxis:170,yaxis:200},{xaxis:160,yaxis:200},]; //cordinates for snake
 
-var dx=0,dy=0,upwardMovement,rightMovement,downwardMovement,leftMovement,foodxaxis,foodyaxis,snakeTail;//variable declaration
+var dx=0,dy=0,upwardMovement,rightMovement,downwardMovement,leftMovement,foodxaxis,foodyaxis,snakeTail,a=0,score=0;//variable declaration
 
 // formation of snake
 
@@ -21,25 +21,37 @@ snake();  //forming first snake
 
 window.addEventListener("keyup",(evt)=>{ 
 switch(evt.keyCode){
-	case 38: dx=0;                    
+	case 38: if (a!=20) {
+	       	 dx=0;                    
 	         dy=-10;
 	         stop();
 	         upwardMovement=setInterval(movement,100);
+	         a=10; }
+	        
  	break;
-	case 40: dx=0;
+	case 40: if (a!=10) {
+	         dx=0;
 	         dy=10;
 	         stop();
 	         downwardMovement=setInterval(movement,100);
+	         a=20;}
+	         
 	break;
-	case 37: dx=-10;
+	case 37: if (a!=40) {
+	         dx=-10;
 	         dy=0;
 	         stop();
 	         leftMovement=setInterval(movement,100);
+	         a=30; }
+	        
 	break;
-	case 39: dx=10;
+	case 39: if (a!=30) {
+	         dx=10;
 	         dy=0;
 	         stop();
 	         rightMovement=setInterval(movement,100);
+	         a=40;}
+	         
 	break;
         }
 });
@@ -82,13 +94,13 @@ function food(){
 	 ctx.strokeRect(foodxaxis,foodyaxis,10,10);
 	
  //to avoid food on snake body
+
 		 for (var i=1;i<snakeTail; i++) {
           if (foodxaxis==snakeCordinates[i].xaxis && foodyaxis==snakeCordinates[i].yaxis) { 
                    food();
                    break; 
              }	 	
        }
-
 }
 food();
 
@@ -102,6 +114,9 @@ function checkFoodCordinates(){
                 }
                  snakeCordinates.unshift(addingTail);
                  food();
+                 score+=1;
+                 functionscore();
+
         }
 }
 
@@ -110,13 +125,28 @@ function checkFoodCordinates(){
 function gameOver(){
 	for (var i =1;i<snakeTail; i++) {
    		if (snakeCordinates[0].xaxis==snakeCordinates[i].xaxis && snakeCordinates[0].yaxis==snakeCordinates[i].yaxis){
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            ctx.font="30px aerial";
-            ctx.fillText("GAME OVER",0,200);
-            stop();
-               break;
-		}
+            printGameOver();
+            break;
+        }
     }
+        if (snakeCordinates[0].xaxis>390 || snakeCordinates[0].xaxis<0 || snakeCordinates[0].yaxis>390 || snakeCordinates[0].yaxis<0){
+            printGameOver();        
+        }
+
 }
 
+//printing GameOver
 
+function printGameOver(){ 
+	ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.font="30px aerial";
+    ctx.fillText("GAME OVER",0,200);
+    stop();
+}  
+
+// score 
+ 
+function functionscore(){
+document.getElementById('score').value = score;	
+}
+functionscore();
